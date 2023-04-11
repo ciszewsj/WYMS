@@ -66,7 +66,7 @@ public class ProductController {
 		product.setName(request.getName());
 		product.setImage(request.getImage());
 
-		if (request.getAmount() != 0) {
+		if (request.getAmount() > 0) {
 			Deposit deposit = new Deposit();
 			deposit.setValue(request.getAmount());
 			deposit.setDate(new Date());

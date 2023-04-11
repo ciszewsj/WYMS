@@ -1,7 +1,6 @@
 package ee.ciszewsj.pos.controller.bill;
 
 import ee.ciszewsj.pos.database.Bill;
-import ee.ciszewsj.pos.database.Cart;
 import ee.ciszewsj.pos.database.CartItem;
 import ee.ciszewsj.pos.database.Product;
 import ee.ciszewsj.pos.repository.BillRepository;
@@ -9,6 +8,7 @@ import ee.ciszewsj.pos.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class BillController {
 
 	@PostMapping("/{id}")
 	@Transactional
-	public void makeReturn(@PathVariable Long id, @RequestBody ReturnRequest request) {
+	public void makeReturn(@PathVariable Long id, @RequestBody @Validated ReturnRequest request) {
 		Bill bill = billRepository.findById(id).orElseThrow();
 		List<CartItem> newReturns = new ArrayList<>();
 		request.getReturnProductRequests()
@@ -53,6 +53,7 @@ public class BillController {
 											.stream()
 											.filter(cartItem -> cartItem.getProduct().getId().equals(returnProductRequest.getProductId()))
 											.map(CartItem::getValue)
+											.map(value -> -1 * value)
 											.reduce(products, Integer::sum);
 
 							if (products - returnProductRequest.getAmount() >= 0) {

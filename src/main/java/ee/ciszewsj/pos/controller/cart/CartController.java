@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/pos")
+@RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController {
 	private final CartRepository cartRepository;

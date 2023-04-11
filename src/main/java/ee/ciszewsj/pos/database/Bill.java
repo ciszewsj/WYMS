@@ -1,8 +1,6 @@
 package ee.ciszewsj.pos.database;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +10,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "bill")
 public class Bill {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String cashierId;
 	private Date date;

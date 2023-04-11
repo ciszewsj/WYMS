@@ -4,6 +4,7 @@ import ee.ciszewsj.pos.database.Pos;
 import ee.ciszewsj.pos.repository.PosRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,14 +27,14 @@ public class PosController {
 	}
 
 	@PostMapping
-	public Pos createPos(@RequestBody PosRequest request) {
+	public Pos createPos(@RequestBody @Validated PosRequest request) {
 		Pos pos = new Pos();
 		pos.setName(request.getName());
 		return posRepository.save(pos);
 	}
 
 	@PutMapping("/{id}")
-	public Pos updatePos(@PathVariable Long id, @RequestBody PosRequest request) {
+	public Pos updatePos(@PathVariable Long id, @RequestBody @Validated PosRequest request) {
 		Pos pos = posRepository.findById(id).orElseThrow();
 		pos.setName(request.getName());
 		return posRepository.save(pos);

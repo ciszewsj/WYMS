@@ -4,6 +4,7 @@ import ee.ciszewsj.pos.database.Category;
 import ee.ciszewsj.pos.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CategoryController {
 	}
 
 	@PostMapping
-	public Category createCategory(@RequestBody CategoryRequest request) {
+	public Category createCategory(@RequestBody @Validated CategoryRequest request) {
 		Category category = new Category();
 		category.setName(request.getName());
 		category.setImage(request.getPictureUrl());
@@ -34,7 +35,7 @@ public class CategoryController {
 	}
 
 	@PutMapping("/{id}")
-	public Category updateCategory(@PathVariable Long id, @RequestBody CategoryRequest request) {
+	public Category updateCategory(@PathVariable Long id, @RequestBody @Validated CategoryRequest request) {
 		Category category = categoryRepository.findById(id).orElseThrow();
 		category.setName(request.getName());
 		category.setImage(request.getPictureUrl());
