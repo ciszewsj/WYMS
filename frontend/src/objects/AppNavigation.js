@@ -8,12 +8,14 @@ export default function AppNavigation() {
     function Navigation() {
         return (<Navbar expand={"lg"} bg={"dark"} variant={"dark"}>
             <Container>
-                <NavLink className={"navbar-brand"} to="/">EasyPost</NavLink>
+                <NavLink className={"navbar-brand"} to="/">PoS</NavLink>
                 <Navbar.Toggle aria-controls={"navbarNavAltMarkup"}/>
                 <Navbar.Collapse id="navbarNavAltMarkup">
                     <Nav className={"me-auto"}>
-                        <NavLink className={"nav-item nav-link"} to="/">Main</NavLink>
-                        <NavLink className={"nav-item nav-link"} to="/create">Create parcel</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/">Products</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/create">Categories</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/create">Bills</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/pos">PoSes</NavLink>
                     </Nav>
                     <Nav>
                         <NavLink className={"nav-item nav-link"} id="nav-login" to="/login">Login</NavLink>

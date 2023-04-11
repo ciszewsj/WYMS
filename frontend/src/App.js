@@ -16,6 +16,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PosListSite/>}/>
                     <Route path="/*" element={<PosSite/>}/>
+                    <Route path="/pos/:id" element={<PosSite/>}/>
                 </Routes>
             </Container>
             {/*</UserContext.Provider>*/}

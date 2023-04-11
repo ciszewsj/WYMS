@@ -1,16 +1,27 @@
 import {Button, Container, Form} from "react-bootstrap";
-import {createPos} from "./PosRequests";
+import {createPos, deletePos, getPos, updatePos} from "./PosRequests";
 import {useState} from "react";
+import {useEffect} from "react";
+import {useParams} from "react-router-dom";
 
 let PosSite = () => {
     let [form, setForm] = useState({})
+    let [pos, setPos] = useState([])
+    let [errorList, setErrorList] = useState([])
+    let {id} = useParams();
+
+    useEffect(() => {
+        if (id != null) {
+            getPos(id, setPos, setErrorList)
+        }
+    }, [])
 
     return <Container>
         <h1>Point Of Sale</h1>
         <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Id</Form.Label>
-                <Form.Control type="email" placeholder="Id not available" readOnly={true}/>
+                <Form.Control type="email" placeholder="Id not available" defaultValue={pos.id} readOnly={true}/>
                 <Form.Text className="text-muted">
                     Value is not editable.
                 </Form.Text>
@@ -18,7 +29,7 @@ let PosSite = () => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="PoS name" onChange={event => {
+                <Form.Control type="text" placeholder="PoS name" defaultValue={pos.name} onChange={event => {
                     form.name = event.target.value
                     setForm({...form})
                     console.log(form)
@@ -28,10 +39,21 @@ let PosSite = () => {
 
             <Button variant="primary" type="submit" onClick={(e) => {
                 e.preventDefault();
-                createPos({name: form.name});
+                if (id != null) {
+                    updatePos(id, {name: form.name})
+                } else {
+                    createPos({name: form.name});
+                }
             }}>
-                Submit
+                Update
             </Button>
+            {id &&
+                <Button variant="danger" type="submit" onClick={(e) => {
+                    deletePos(id)
+                }}>
+                    Delete
+                </Button>
+            }
         </Form>
     </Container>
 }
