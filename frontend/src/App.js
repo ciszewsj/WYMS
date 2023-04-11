@@ -1,25 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import PosListSite from "./pos/PosListSite";
+import AppNavigation from "./objects/AppNavigation";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Container} from "react-bootstrap";
+import PosSite from "./pos/PosSite";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+            {/*<UserContext.Provider value={value}>*/}
+            <AppNavigation/>
+            <Container className="p-4 m-auto">
+
+                <Routes>
+                    <Route path="/" element={<PosListSite/>}/>
+                    <Route path="/*" element={<PosSite/>}/>
+                </Routes>
+            </Container>
+            {/*</UserContext.Provider>*/}
+        </BrowserRouter>
+    );
 }
 
 export default App;

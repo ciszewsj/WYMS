@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cart")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CartController {
 	private final CartRepository cartRepository;
 	private final ProductRepository productRepository;

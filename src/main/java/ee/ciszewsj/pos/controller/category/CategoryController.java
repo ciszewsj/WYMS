@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/category")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CategoryController {
 	private final CategoryRepository categoryRepository;
 

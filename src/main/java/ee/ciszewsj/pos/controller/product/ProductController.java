@@ -18,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ProductController {
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;

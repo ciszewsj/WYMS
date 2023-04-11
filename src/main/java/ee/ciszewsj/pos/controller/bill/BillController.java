@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bill")
 @RequiredArgsConstructor
+@CrossOrigin
 public class BillController {
 	private final BillRepository billRepository;
 	private final ProductRepository productRepository;

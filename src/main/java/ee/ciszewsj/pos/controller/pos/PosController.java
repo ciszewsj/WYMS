@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pos")
 @RequiredArgsConstructor
+@CrossOrigin
 public class PosController {
 	private final PosRepository posRepository;
 
@@ -28,6 +29,7 @@ public class PosController {
 
 	@PostMapping
 	public Pos createPos(@RequestBody @Validated PosRequest request) {
+		log.info("Create Pos Request: {}", request);
 		Pos pos = new Pos();
 		pos.setName(request.getName());
 		return posRepository.save(pos);
