@@ -30,8 +30,8 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public Product getProduct(@PathVariable Long id) {
-		return productRepository.findById(id).orElseThrow();
+	public Product getProduct(@PathVariable String id) {
+		return productRepository.findProductByCode(id).orElseThrow();
 	}
 
 	@PostMapping

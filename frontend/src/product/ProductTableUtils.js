@@ -1,9 +1,18 @@
 import {Image, Table} from "react-bootstrap";
 
+export function  getCurrentPrice (priceList){
+    if (priceList.length > 0) {
+        let price = priceList.at(-1)
+        price = price.value / 100
+        return price.toFixed(2)
+    } else {
+        return (0.00).toFixed(2)
+    }
+}
 
 export function ProductTable({productsList, navigate}) {
     let ProductsTable = ({code, name, category, price, deposit, image}) => {
-        return <tr onClick={() => navigate('/pos/' + code)}>
+        return <tr onClick={() => navigate('/products/' + code)}>
             <th scope="row">{code}</th>
             <td>{name}</td>
             <td>{category}</td>
@@ -24,15 +33,7 @@ export function ProductTable({productsList, navigate}) {
         return number
     }
 
-    let getCurrentPrice = (priceList) => {
-        if (priceList.length > 0) {
-            let price = priceList.at(-1)
-            price = price.value / 100
-            return price.toFixed(2)
-        } else {
-            return (0.00).toFixed(2)
-        }
-    }
+
     return <Table responsive={"md"} striped={true} border={1} variant={"light"}>
         <thead>
         <tr>

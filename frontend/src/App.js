@@ -8,6 +8,7 @@ import CategoryListSite from "./category/CategoryListSite";
 import './App.css';
 import CategorySite from "./category/CategorySite";
 import ProductListSite from "./product/ProductListSite";
+import ProductSite from "./product/ProductSite";
 
 function App() {
     return (
@@ -24,7 +25,8 @@ function App() {
                     <Route path="/categories" element={<CategoryListSite/>}/>
                     <Route path="/categories/:id" element={<CategorySite/>}/>
                     <Route path="/products" element={<ProductListSite/>}/>
-                    <Route path="/products/:id" element={<CategorySite/>}/>
+                    <Route path="/products/:id" element={<ProductSite/>}/>
+                    <Route path="/products/new" element={<ProductSite/>}/>
                 </Routes>
             </Container>
             {/*</UserContext.Provider>*/}

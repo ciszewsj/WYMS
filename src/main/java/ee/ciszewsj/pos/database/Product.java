@@ -16,6 +16,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	@Column(unique = true)
 	private String code;
 	private String image;
 	@ManyToOne(cascade = CascadeType.ALL)

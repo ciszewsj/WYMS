@@ -17,7 +17,7 @@ let PosSite = () => {
     }, [])
 
     return <Container>
-        <h1>Point Of Sale</h1>
+        <h1>Point Of Sale: {pos.name}</h1>
         <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Id</Form.Label>

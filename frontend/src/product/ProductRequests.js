@@ -24,6 +24,30 @@ export function getProducts(setResponse, setError) {
 
 }
 
+export function getProduct(id, setResponse, setError) {
+    fetch(urlApi + "/product/" + id,
+        {
+            "mode": "cors",
+            "method": "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: `Bearer ${getSession().token}`
+            }
+        }).then(response => {
+        if (response.status === 200) {
+            response.json().then(
+                js => {
+                    setResponse(js)
+                }
+            )
+        } else {
+            console.log("ERROR")
+        }
+    })
+
+}
+
 export function getProductsByCategory(categoryId, setResponse, setError) {
     fetch(urlApi + "/product/category/" + categoryId,
         {
