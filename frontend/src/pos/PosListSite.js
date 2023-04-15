@@ -1,4 +1,4 @@
-import {Container, Table} from "react-bootstrap";
+import {Button, Container, Table} from "react-bootstrap";
 import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import {getPoses} from "./PosRequests";
@@ -32,6 +32,11 @@ let PosListSite = () => {
             {posList && posList.map(pos => <PosTable key={pos.id} id={pos.id} name={pos.name}/>)}
             </tbody>
         </Table>
+        <Button variant="primary" type="submit" onClick={(e) => {
+            navigate("/pos/new")
+        }}>
+            Create
+        </Button>
     </Container>;
 }
 

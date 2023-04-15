@@ -14,7 +14,7 @@ public class CartItem {
 	private Long id;
 	private Integer value = 0;
 	private Type type;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Product product;
 
 	public enum Type {

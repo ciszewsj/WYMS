@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,10 +18,10 @@ public class Product {
 	private String name;
 	private String code;
 	private String image;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
-	@OneToMany
-	private List<Price> priceList;
-	@OneToMany
-	private List<Deposit> depositList;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Price> priceList = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Deposit> depositList = new ArrayList<>();
 }

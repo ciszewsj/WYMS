@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class Bill {
 	private Long id;
 	private String cashierId;
 	private Date date;
-	@OneToMany
-	private List<CartItem> cartItemList;
-	@OneToMany
-	private List<CartItem> returnsItemList;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<CartItem> cartItemList = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<CartItem> returnsItemList = new ArrayList<>();
 }

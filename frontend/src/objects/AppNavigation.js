@@ -12,8 +12,8 @@ export default function AppNavigation() {
                 <Navbar.Toggle aria-controls={"navbarNavAltMarkup"}/>
                 <Navbar.Collapse id="navbarNavAltMarkup">
                     <Nav className={"me-auto"}>
-                        <NavLink className={"nav-item nav-link"} to="/">Products</NavLink>
-                        <NavLink className={"nav-item nav-link"} to="/create">Categories</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/products">Products</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/categories">Categories</NavLink>
                         <NavLink className={"nav-item nav-link"} to="/create">Bills</NavLink>
                         <NavLink className={"nav-item nav-link"} to="/pos">PoSes</NavLink>
                     </Nav>
