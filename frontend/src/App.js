@@ -24,6 +24,7 @@ function App() {
                     <Route path="/pos/new" element={<PosSite/>}/>
                     <Route path="/categories" element={<CategoryListSite/>}/>
                     <Route path="/categories/:id" element={<CategorySite/>}/>
+                    <Route path="/categories/new" element={<CategorySite/>}/>
                     <Route path="/products" element={<ProductListSite/>}/>
                     <Route path="/products/:id" element={<ProductSite/>}/>
                     <Route path="/products/new" element={<ProductSite/>}/>

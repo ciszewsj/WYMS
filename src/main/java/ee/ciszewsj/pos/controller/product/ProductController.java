@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -64,34 +65,50 @@ public class ProductController {
 
 	@PutMapping("/{id}")
 	@Transactional
-	public Product updateProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
-		Product product = productRepository.findById(id).orElseThrow();
+	public Product updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
+		Product product = productRepository.findProductByCode(id).orElseThrow();
 
-		Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow();
+		Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
 
 		product.setCategory(category);
 		product.setName(request.getName());
 		product.setImage(request.getImage());
 
-		if (request.getAmount() > 0) {
-			Deposit deposit = new Deposit();
-			deposit.setValue(request.getAmount());
-			deposit.setDate(new Date());
-			deposit.setDescription("");
-			deposit.setType(Deposit.Type.CORRECTION);
-			product.getDepositList().add(deposit);
+		if (request.getPrice() != null) {
+			Price oldPrice = product.getPriceList().stream().filter(price -> price.getEnd() == null).findFirst().orElse(null);
+			if (oldPrice == null || !Objects.equals(request.getPrice(), oldPrice.getValue())) {
+				if (oldPrice != null) {
+					oldPrice.setEnd(new Date());
+				}
+				Price newPrice = new Price();
+				newPrice.setStart(new Date());
+				newPrice.setValue(request.getPrice());
+				product.getPriceList().add(newPrice);
+			}
 		}
 		return productRepository.save(product);
-	}
-
-	@DeleteMapping("/{id}")
-	public void deleteProduct(@PathVariable Long id) {
-		Product product = productRepository.findById(id).orElseThrow();
-		productRepository.delete(product);
 	}
 
 	@GetMapping("/category/{id}")
 	public List<Product> getProductsByCategory(@PathVariable Long id) {
 		return productRepository.findProductsByCategoryId(id);
+	}
+
+	@PostMapping("/deposit/{id}")
+	public void depositCorrection(@PathVariable String id, @RequestBody ProductDepositCorrectionRequest request) {
+		Product product = productRepository.findProductByCode(id).orElseThrow();
+
+		if (request.getValue() == 0) {
+			throw new IllegalStateException();
+		}
+
+		Deposit deposit = new Deposit();
+		deposit.setDescription(request.getDescription());
+		deposit.setType(Deposit.Type.CORRECTION);
+		deposit.setValue(request.getValue());
+		deposit.setDate(new Date());
+
+		product.getDepositList().add(deposit);
+		productRepository.save(product);
 	}
 }

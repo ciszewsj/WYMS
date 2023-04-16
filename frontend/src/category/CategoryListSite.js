@@ -1,4 +1,4 @@
-import {Container, Image, Table} from "react-bootstrap";
+import {Button, Container, Image, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import {getCategories} from "./CategoryRequests";
@@ -39,6 +39,11 @@ let CategoryListSite = () => {
                                                                                url={category.image}/>)}
             </tbody>
         </Table>
+        <Button variant="primary" type="submit" onClick={(e) => {
+            navigate("/categories/new")
+        }}>
+            Create
+        </Button>
     </Container>
 }
 

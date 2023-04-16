@@ -1,15 +1,13 @@
 import {Button, Container, Form, Image} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {createPos, deletePos, getPos, updatePos} from "../pos/PosRequests";
-import {getCategory} from "./CategoryRequests";
+import {createCategory, deleteCategory, getCategory, updateCategory} from "./CategoryRequests";
 import {getProductsByCategory} from "../product/ProductRequests";
 import {ProductTable} from "../product/ProductTableUtils";
 
 let CategorySite = () => {
     const navigate = useNavigate();
 
-    let [form, setForm] = useState({})
     let [category, setCategory] = useState({})
     let [productsList, setProductsList] = useState([])
     let [errorList, setErrorList] = useState([])
@@ -29,7 +27,6 @@ let CategorySite = () => {
             </td>
         </tr>
     }
-
 
     useEffect(() => {
         if (id != null) {
@@ -67,9 +64,9 @@ let CategorySite = () => {
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Name</Form.Label>
                 <Form.Control type="text" placeholder="Category name" defaultValue={category.name} onChange={event => {
-                    form.name = event.target.value
-                    setForm({...form})
-                    console.log(form)
+                    category.name = event.target.value
+                    setCategory({...category})
+                    console.log(category)
                 }
                 }/>
             </Form.Group>
@@ -77,9 +74,9 @@ let CategorySite = () => {
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Image URL</Form.Label>
                 <Form.Control type="text" placeholder="Image URL" defaultValue={category.image} onChange={event => {
-                    form.pictureUrl = event.target.value
-                    setForm({...form})
-                    console.log(form)
+                    category.pictureUrl = event.target.value
+                    setCategory({...category})
+                    console.log(category)
                 }
                 }/>
             </Form.Group>
@@ -87,16 +84,16 @@ let CategorySite = () => {
             <Button variant="primary" type="submit" onClick={(e) => {
                 e.preventDefault();
                 if (id != null) {
-                    updatePos(id, {name: form.name})
+                    updateCategory(id, category)
                 } else {
-                    createPos({name: form.name});
+                    createCategory(category);
                 }
             }}>
                 Update
             </Button>
             {id &&
                 <Button variant="danger" type="submit" onClick={(e) => {
-                    deletePos(id)
+                    deleteCategory(id)
                 }}>
                     Delete
                 </Button>

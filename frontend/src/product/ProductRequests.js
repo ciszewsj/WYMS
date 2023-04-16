@@ -71,3 +71,88 @@ export function getProductsByCategory(categoryId, setResponse, setError) {
     })
 
 }
+
+export function createProduct(fields) {
+    fetch(urlApi + "/product",
+        {
+            "mode": "cors",
+            "method": "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: `Bearer ${getSession().token}`
+            },
+            "body": JSON.stringify(
+                {
+                    name: fields.name,
+                    image: fields.image,
+                    price: fields.price,
+                    categoryId: fields.categoryId,
+                    amount: fields.amount
+                }
+            )
+        }).then(response => {
+        if (response.status === 200) {
+
+        } else {
+            console.log("ERROR")
+        }
+    })
+
+}
+
+export function correctDeposit(id, fields) {
+    fetch(urlApi + "/product/deposit/" + id,
+        {
+            "mode": "cors",
+            "method": "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: `Bearer ${getSession().token}`
+            },
+            "body": JSON.stringify(
+                {
+                    description: fields.description,
+                    value: fields.value
+                }
+            )
+        }).then(response => {
+        if (response.status === 200) {
+
+        } else {
+            console.log("ERROR")
+        }
+    })
+}
+
+export function updateProduct(id, fields) {
+    fetch(urlApi + "/product/" + id,
+        {
+            "mode": "cors",
+            "method": "PUT",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                // Authorization: `Bearer ${getSession().token}`
+            },
+            "body": JSON.stringify(
+                {
+                    name: fields.name,
+                    image: fields.image,
+                    price: fields.price,
+                    categoryId: fields.categoryId,
+                    amount: fields.amount
+                }
+            )
+        }).then(response => {
+        if (response.status === 200) {
+
+        } else {
+            response.json().then(js => {
+                console.log(js)
+            })
+            console.log("ERROR")
+        }
+    })
+}
