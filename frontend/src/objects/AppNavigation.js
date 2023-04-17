@@ -6,7 +6,7 @@ import {getPoses} from "../pos/PosRequests";
 import {Navigate} from "react-router-dom";
 
 export default function AppNavigation() {
-    const [settings, setSettings] = useContext(SettingsContext);
+    let [settings, setSettings] = useContext(SettingsContext);
 
     let [poses, setPoses] = useState([])
     let [posesError, setPosesError] = useState([])
@@ -16,8 +16,7 @@ export default function AppNavigation() {
     useEffect(() => {
         getPoses(setPoses, setPosesError)
     }, [settings])
-
-    // if (window.location.pathname !==)
+    console.log(settings)
 
     function Navigation() {
         return (<Navbar expand={"lg"} bg={"dark"} variant={"dark"}>

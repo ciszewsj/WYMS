@@ -1,6 +1,6 @@
 import {urlApi} from "../objects/Settings";
 
-export function createPos(fields) {
+export function createPos(fields, setResponse) {
     fetch(urlApi + "/pos",
         {
             "mode": "cors",
@@ -19,11 +19,21 @@ export function createPos(fields) {
         if (response.status === 200) {
             response.json().then(
                 js => {
-                    console.log(js)
+                    let resp = {status: 201}
+                    resp.id = js.id
+                    setResponse(resp)
                 }
             )
-        } else {
-            console.log("ERROR")
+        } else if (response.status === 400) {
+            response.json().then(
+                js => {
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
+                }
+            )
         }
     })
 }
@@ -66,15 +76,17 @@ export function getPos(id, setResponse, setError) {
             response.json().then(
                 js => {
                     setResponse(js)
+                    setError({"status": 200})
                 }
             )
         } else {
             console.log("ERROR")
+            setError({"status": 500})
         }
     })
 }
 
-export function updatePos(id, fields) {
+export function updatePos(id, fields, setResponse) {
     fetch(urlApi + "/pos/" + id,
         {
             "mode": "cors",
@@ -91,18 +103,22 @@ export function updatePos(id, fields) {
             )
         }).then(response => {
         if (response.status === 200) {
+            setResponse({"status": 201})
+        } else {
             response.json().then(
                 js => {
-                    console.log(js)
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
                 }
             )
-        } else {
-            console.log("ERROR")
         }
     })
 }
 
-export function deletePos(id) {
+export function deletePos(id, setResponse) {
     fetch(urlApi + "/pos/" + id,
         {
             "mode": "cors",
@@ -114,13 +130,11 @@ export function deletePos(id) {
             }
         }).then(response => {
         if (response.status === 200) {
-            response.json().then(
-                js => {
-                    console.log(js)
-                }
-            )
+
+            setResponse({"status": 300})
         } else {
             console.log("ERROR")
+            setResponse({"status": 500})
         }
     })
 }

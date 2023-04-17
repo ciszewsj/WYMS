@@ -8,6 +8,5 @@ import lombok.Data;
 public class PosRequest {
 	@NotNull
 	@Size(min = 3, max = 256)
-
 	private String name;
 }

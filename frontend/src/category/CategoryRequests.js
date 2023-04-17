@@ -23,7 +23,7 @@ export function getCategories(setResponse, setError) {
     })
 }
 
-export function createCategory(fields) {
+export function createCategory(fields, setResponse) {
     fetch(urlApi + "/category",
         {
             "mode": "cors",
@@ -43,16 +43,26 @@ export function createCategory(fields) {
         if (response.status === 200) {
             response.json().then(
                 js => {
-                    console.log(js)
+                    let resp = {status: 201}
+                    resp.id = js.id
+                    setResponse(resp)
                 }
             )
         } else {
-            console.log("ERROR")
+            response.json().then(
+                js => {
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
+                }
+            )
         }
     })
 }
 
-export function updateCategory(id, fields) {
+export function updateCategory(id, fields, setResponse) {
     fetch(urlApi + "/category/" + id,
         {
             "mode": "cors",
@@ -70,13 +80,17 @@ export function updateCategory(id, fields) {
             )
         }).then(response => {
         if (response.status === 200) {
+            setResponse({"status": 201})
+        } else {
             response.json().then(
                 js => {
-                    console.log(js)
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
                 }
             )
-        } else {
-            console.log("ERROR")
         }
     })
 }
@@ -105,7 +119,7 @@ export function getCategory(id, setResponse, setError) {
     })
 }
 
-export function deleteCategory(id) {
+export function deleteCategory(id, setResponse) {
     fetch(urlApi + "/category/" + id,
         {
             "mode": "cors",
@@ -117,9 +131,10 @@ export function deleteCategory(id) {
             }
         }).then(response => {
         if (response.status === 200) {
-
+            setResponse({"status": 300})
         } else {
             console.log("ERROR")
+            setResponse({"status": 500})
         }
     })
 }

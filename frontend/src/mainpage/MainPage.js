@@ -24,7 +24,7 @@ let MainPage = () => {
         return (<Card style={{width: '18rem'}}
                       onClick={e => {
                           e.preventDefault()
-                          addProductToCart(settings.cartId, {productId: product.id, amount: 1})
+                          addProductToCart(settings.cartId, {productId: product.id, amount: 1}, setErrorList)
                           console.log("CLICKED !@#?")
                       }}
         >

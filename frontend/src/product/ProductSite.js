@@ -1,18 +1,22 @@
 import {Button, Container, Form, Image, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {correctDeposit, createProduct, getProduct, updateProduct} from "./ProductRequests";
 import {timeToStr} from "../utils/TimeUtils";
 import {getCurrentPrice, longToPrice} from "../utils/MoneyUtils";
 import {getCategories} from "../category/CategoryRequests";
 import {RequiredLogin} from "../objects/AppNavigation";
+import {v4 as uuidv4} from 'uuid';
 
 let ProductSite = () => {
+    const navigate = useNavigate();
+
     let [formProduct, setFormProduct] = useState({})
     let [categories, setCategories] = useState([])
     let [formDeposit, setFormDeposit] = useState({})
     let [errorList, setErrorList] = useState([])
     let [errorListCategories, setErrorListCategories] = useState([])
+    let [response, setResponse] = useState({})
     let {id} = useParams();
 
     let DepositTable = ({date, description, type, value}) => {
@@ -33,15 +37,36 @@ let ProductSite = () => {
     }
 
     useEffect(() => {
+        console.log(errorList)
+        if (errorList.status === 201) {
+            if (errorList.code) {
+                navigate("/products/" + errorList.code)
+                return;
+            } else {
+                getProduct(id, setFormProduct, setErrorList)
+            }
+        } else if (errorList.status === 500) {
+            navigate("/error")
+            return;
+        } else if (errorList.status === 300) {
+            navigate("/products")
+            return;
+        }
+    }, [errorList])
+
+    useEffect(() => {
         if (id != null) {
             getProduct(id, setFormProduct, setErrorList)
+        } else {
+            formProduct.code = uuidv4()
+            setFormProduct({...formProduct})
         }
     }, [])
 
     useEffect(() => {
         getCategories(setCategories, setErrorListCategories)
     }, [])
-
+    console.log(formProduct)
     return <RequiredLogin>
         <Container>
             <h1>Product: {formProduct.name}</h1>
@@ -53,11 +78,17 @@ let ProductSite = () => {
             <Form>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Code</Form.Label>
-                    <Form.Control type="text" placeholder="Code not available" defaultValue={formProduct.code}
-                                  readOnly={true}/>
-                    <Form.Text className="text-muted">
-                        Value is not editable.
-                    </Form.Text>
+                    <Form.Control type="text" placeholder="Code not available"
+                                  defaultValue={formProduct.code}
+                                  onChange={event => {
+                                      formProduct.code = event.target.value
+                                      setFormProduct({...formProduct})
+                                  }}/>
+                    {errorList && errorList.code &&
+                        <Form.Text className="text-muted">
+                            {errorList.code}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -68,6 +99,11 @@ let ProductSite = () => {
                                       setFormProduct({...formProduct})
                                   }
                                   }/>
+                    {errorList && errorList.name &&
+                        <Form.Text className="text-muted">
+                            {errorList.name}
+                        </Form.Text>
+                    }
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Price</Form.Label>
@@ -80,6 +116,11 @@ let ProductSite = () => {
                                       event.target.value = (formProduct.price / 100).toFixed(2).toString()
                                   }
                                   }/>
+                    {errorList && errorList.price &&
+                        <Form.Text className="text-muted">
+                            {errorList.price}
+                        </Form.Text>
+                    }
                 </Form.Group>
                 {!id &&
                     <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -92,6 +133,11 @@ let ProductSite = () => {
                                           console.log(formProduct)
                                       }
                                       }/>
+                        {errorList && errorList.amount &&
+                            <Form.Text className="text-muted">
+                                {errorList.amount}
+                            </Form.Text>
+                        }
                     </Form.Group>}
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -110,6 +156,11 @@ let ProductSite = () => {
                             })
                         }
                     </Form.Select>
+                    {errorList && errorList.categoryId &&
+                        <Form.Text className="text-muted">
+                            {errorList.categoryId}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -121,16 +172,21 @@ let ProductSite = () => {
                                       console.log(formProduct)
                                   }
                                   }/>
+                    {errorList && errorList.image &&
+                        <Form.Text className="text-muted">
+                            {errorList.image}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Button variant="primary" type="submit" onClick={(e) => {
                     e.preventDefault();
                     console.log("cliecked?", formProduct)
                     if (id != null) {
-                        updateProduct(id, formProduct)
+                        updateProduct(id, formProduct, setErrorList)
                     } else {
                         console.log(123)
-                        createProduct(formProduct);
+                        createProduct(formProduct, setErrorList);
                     }
                 }}>
                     Update

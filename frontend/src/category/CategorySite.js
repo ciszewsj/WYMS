@@ -15,6 +15,21 @@ let CategorySite = () => {
     let [productErrorList, setProductErrorList] = useState([])
     let {id} = useParams();
 
+    useEffect(() => {
+        if (errorList.status === 201) {
+            if (errorList.id) {
+                navigate("/categories/" + errorList.id)
+                return;
+            }
+        } else if (errorList.status === 500) {
+            navigate("/error")
+            return;
+        } else if (errorList.status === 300) {
+            navigate("/categories")
+            return;
+        }
+    }, [errorList])
+
     let ProductsTable = ({code, name, category, price, deposit, image}) => {
         return <tr onClick={() => navigate('/pos/' + code)}>
             <th scope="row">{code}</th>
@@ -38,7 +53,6 @@ let CategorySite = () => {
     useEffect(() => {
         if (category !== {} && category.id != null) {
             getProductsByCategory(category.id, setProductsList, setProductErrorList)
-            console.log(productsList)
         }
     }, [category])
 
@@ -70,9 +84,13 @@ let CategorySite = () => {
                                   onChange={event => {
                                       category.name = event.target.value
                                       setCategory({...category})
-                                      console.log(category)
                                   }
                                   }/>
+                    {errorList && errorList.name &&
+                        <Form.Text className="text-muted">
+                            {errorList.name}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -80,24 +98,29 @@ let CategorySite = () => {
                     <Form.Control type="text" placeholder="Image URL" defaultValue={category.image} onChange={event => {
                         category.pictureUrl = event.target.value
                         setCategory({...category})
-                        console.log(category)
                     }
                     }/>
+                    {errorList && errorList.pictureUrl &&
+                        <Form.Text className="text-muted">
+                            {errorList.pictureUrl}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Button variant="primary" type="submit" onClick={(e) => {
                     e.preventDefault();
                     if (id != null) {
-                        updateCategory(id, category)
+                        updateCategory(id, category, setErrorList)
                     } else {
-                        createCategory(category);
+                        createCategory(category, setErrorList);
                     }
                 }}>
                     Update
                 </Button>
                 {id &&
                     <Button variant="danger" type="submit" onClick={(e) => {
-                        deleteCategory(id)
+                        e.preventDefault()
+                        deleteCategory(id, setErrorList)
                     }}>
                         Delete
                     </Button>

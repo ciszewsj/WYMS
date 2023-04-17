@@ -2,14 +2,17 @@ import {Button, Container, Form} from "react-bootstrap";
 import {createPos, deletePos, getPos, updatePos} from "./PosRequests";
 import {useState} from "react";
 import {useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {RequiredLogin} from "../objects/AppNavigation";
 
 let PosSite = () => {
+    const navigate = useNavigate();
+
     let [form, setForm] = useState({})
-    let [pos, setPos] = useState([])
-    let [errorList, setErrorList] = useState([])
+    let [pos, setPos] = useState({})
+    let [errorList, setErrorList] = useState({})
     let {id} = useParams();
+
 
     useEffect(() => {
         if (id != null) {
@@ -17,6 +20,23 @@ let PosSite = () => {
         }
     }, [])
 
+    useEffect(() => {
+        console.log(errorList)
+        if (errorList.status === 201) {
+            if (errorList.id) {
+                navigate("/pos/" + errorList.id)
+                return;
+            }
+        } else if (errorList.status === 500) {
+            navigate("/error")
+            return;
+        } else if (errorList.status === 300) {
+            navigate("/pos")
+            return;
+        }
+    }, [errorList])
+
+    console.log(errorList)
     return <RequiredLogin>
         <Container>
             <h1>Point Of Sale: {pos.name}</h1>
@@ -37,21 +57,29 @@ let PosSite = () => {
                         console.log(form)
                     }
                     }/>
+                    {errorList && errorList.name &&
+                        <Form.Text className="text-muted">
+                            {errorList.name}
+                        </Form.Text>
+                    }
                 </Form.Group>
 
                 <Button variant="primary" type="submit" onClick={(e) => {
                     e.preventDefault();
+                    setErrorList({})
                     if (id != null) {
-                        updatePos(id, {name: form.name})
+                        updatePos(id, {name: form.name}, setErrorList)
                     } else {
-                        createPos({name: form.name});
+                        createPos({name: form.name}, setErrorList);
                     }
                 }}>
                     Update
                 </Button>
                 {id &&
                     <Button variant="danger" type="submit" onClick={(e) => {
-                        deletePos(id)
+                        e.preventDefault()
+                        setErrorList({})
+                        deletePos(id, setErrorList)
                     }}>
                         Delete
                     </Button>

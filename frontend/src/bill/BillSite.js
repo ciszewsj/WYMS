@@ -16,11 +16,12 @@ let BillSite = () => {
     let [returnForm, setReturnForm] = useState({})
     let [errorsForm, setErrorsForm] = useState([])
 
+
     let {id} = useParams();
 
     useEffect(() => {
         getBill(id, setBill, setErrors)
-    }, [])
+    }, [errors])
 
     return <RequiredLogin>
         <Container>
@@ -87,7 +88,7 @@ let BillSite = () => {
                 </Form.Group>
                 <Button variant="danger" type="submit" onClick={(e) => {
                     e.preventDefault()
-                    makeReturn(id, returnForm)
+                    makeReturn(id, returnForm, setErrors)
                 }}>
                     Make Return
                 </Button>

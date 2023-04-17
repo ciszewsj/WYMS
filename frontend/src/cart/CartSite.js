@@ -16,15 +16,16 @@ let CartSite = () => {
     let [cartPrice, setCartPrice] = useState(0)
     let [errorListPrice, setErrorListPrice] = useState([])
 
-    useEffect(() => {
+    let renew = () => {
         setCart({})
         getCart(settings.cartId, setCart, setErrorList)
-    }, [settings])
-
-    useEffect(() => {
         setCartPrice(0)
         getCartPrice(settings.cartId, setCartPrice, setErrorListPrice)
-    }, [settings])
+    }
+
+    useEffect(() => {
+        renew()
+    }, [settings, errorList])
 
     if (settings.token && settings.cartId == null) {
         console.log("?????")
@@ -47,7 +48,7 @@ let CartSite = () => {
             <td className={"align-middle"}>{amount &&
                 <Button variant="danger" type="submit" onClick={(e) => {
                     e.preventDefault()
-                    addProductToCart(settings.cartId, {productId: id, amount: -1})
+                    addProductToCart(settings.cartId, {productId: id, amount: -1}, setErrorList)
                 }}>
                     -
                 </Button>}
@@ -56,7 +57,7 @@ let CartSite = () => {
             <td className={"align-middle"}>{amount &&
                 <Button variant="primary" type="submit" onClick={(e) => {
                     e.preventDefault()
-                    addProductToCart(settings.cartId, {productId: id, amount: 1})
+                    addProductToCart(settings.cartId, {productId: id, amount: 1}, setErrorList)
                 }}>
                     +
                 </Button>}
@@ -99,7 +100,7 @@ let CartSite = () => {
             </Table>
             <Button variant="primary" onClick={e => {
                 e.preventDefault()
-                payForCart(settings.cartId)
+                payForCart(settings.cartId, setErrorList)
             }}>Pay</Button>
         </Container>
     </RequiredLogin>

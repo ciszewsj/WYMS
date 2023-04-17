@@ -9,6 +9,7 @@ import ee.ciszewsj.pos.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -37,7 +38,7 @@ public class ProductController {
 
 	@PostMapping
 	@Transactional
-	public Product createProduct(@RequestBody ProductRequest request) {
+	public Product createProduct(@RequestBody @Validated ProductRequest request) {
 		Product product = new Product();
 		Category category = null;
 		if (request.getCategoryId() != null) {
@@ -46,7 +47,7 @@ public class ProductController {
 		product.setCategory(category);
 		product.setName(request.getName());
 		product.setImage(request.getImage());
-		product.setCode(UUID.randomUUID().toString());
+		product.setCode(request.getCode());
 
 		Price price = new Price();
 		price.setValue(request.getPrice());
@@ -66,12 +67,13 @@ public class ProductController {
 
 	@PutMapping("/{id}")
 	@Transactional
-	public Product updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
+	public Product updateProduct(@PathVariable String id, @RequestBody @Validated ProductRequest request) {
 		Product product = productRepository.findProductByCode(id).orElseThrow();
 		Category category = null;
 		if (request.getCategoryId() != null) {
 			category = categoryRepository.findById(request.getCategoryId()).orElse(null);
 		}
+		product.setCode(request.getCode());
 		product.setCategory(category);
 		product.setName(request.getName());
 		product.setImage(request.getImage());

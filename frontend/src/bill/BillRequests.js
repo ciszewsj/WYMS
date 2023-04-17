@@ -53,7 +53,7 @@ export function getBill(id, setResponse, setError) {
     })
 }
 
-export function makeReturn(id, fields) {
+export function makeReturn(id, fields, setResponse) {
     fetch(urlApi + "/bill/" + id,
         {
             "mode": "cors",
@@ -80,5 +80,6 @@ export function makeReturn(id, fields) {
         } else {
             console.log("ERROR")
         }
+        setResponse({})
     })
 }

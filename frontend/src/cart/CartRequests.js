@@ -1,6 +1,6 @@
 import {urlApi} from "../objects/Settings";
 
-export function addProductToCart(cartId, fields) {
+export function addProductToCart(cartId, fields, setResponse) {
     fetch(urlApi + "/cart/" + cartId,
         {
             "mode": "cors",
@@ -19,10 +19,11 @@ export function addProductToCart(cartId, fields) {
         } else {
             console.log("ERROR")
         }
+        setResponse({})
     })
 }
 
-export function payForCart(cartId) {
+export function payForCart(cartId, setResponse) {
     fetch(urlApi + "/cart/" + cartId + "/pay",
         {
             "mode": "cors",
@@ -38,6 +39,7 @@ export function payForCart(cartId) {
         } else {
             console.log("ERROR")
         }
+        setResponse({})
     })
 }
 

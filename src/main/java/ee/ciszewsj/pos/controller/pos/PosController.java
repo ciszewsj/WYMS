@@ -53,6 +53,10 @@ public class PosController {
 	@DeleteMapping("/{id}")
 	public void deletePos(@PathVariable Long id) {
 		Pos pos = posRepository.findById(id).orElseThrow();
+		Cart cart = cartRepository.findByPosId(id).orElse(null);
+		if (cart != null) {
+			cartRepository.delete(cart);
+		}
 		posRepository.delete(pos);
 	}
 

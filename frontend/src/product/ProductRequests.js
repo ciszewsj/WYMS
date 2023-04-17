@@ -42,6 +42,7 @@ export function getProduct(id, setResponse, setError) {
                         js.categoryId = js.category.id
                     }
                     console.log(js)
+                    console.log("????")
                     setResponse(js)
                 }
             )
@@ -76,7 +77,7 @@ export function getProductsByCategory(categoryId, setResponse, setError) {
 
 }
 
-export function createProduct(fields) {
+export function createProduct(fields, setResponse) {
     fetch(urlApi + "/product",
         {
             "mode": "cors",
@@ -92,14 +93,30 @@ export function createProduct(fields) {
                     image: fields.image,
                     price: fields.price,
                     categoryId: fields.categoryId,
-                    amount: fields.amount
+                    amount: fields.amount,
+                    code: fields.code
                 }
             )
         }).then(response => {
         if (response.status === 200) {
-            console.log("CREATED")
-        } else {
-            console.log("ERROR")
+            response.json().then(
+                js => {
+                    console.log(js)
+                    let resp = {status: 201}
+                    resp.code = js.code
+                    setResponse(resp)
+                }
+            )
+        } else if (response.status === 400) {
+            response.json().then(
+                js => {
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
+                }
+            )
         }
     })
 
@@ -130,7 +147,7 @@ export function correctDeposit(id, fields) {
     })
 }
 
-export function updateProduct(id, fields) {
+export function updateProduct(id, fields, setResponse) {
     fetch(urlApi + "/product/" + id,
         {
             "mode": "cors",
@@ -146,17 +163,26 @@ export function updateProduct(id, fields) {
                     image: fields.image,
                     price: fields.price,
                     categoryId: fields.categoryId,
-                    amount: fields.amount
+                    amount: fields.amount,
+                    code: fields.code
                 }
             )
         }).then(response => {
         if (response.status === 200) {
 
+            let resp = {status: 201}
+            setResponse(resp)
+
         } else {
-            response.json().then(js => {
-                console.log(js)
-            })
-            console.log("ERROR")
+            response.json().then(
+                js => {
+                    let resp = {status: 400}
+                    js.forEach(error => {
+                        resp[error.field] = error.defaultMessage
+                    })
+                    setResponse(resp)
+                }
+            )
         }
     })
 }
