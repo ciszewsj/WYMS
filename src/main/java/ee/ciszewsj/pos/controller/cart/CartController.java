@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @RestController
@@ -30,24 +31,12 @@ public class CartController {
 
 	@GetMapping("/{id}/price")
 	public Long getPrice(@PathVariable Long id) {
-		return (cartRepository
+		Cart cart = cartRepository
 				.findByPosId(id)
-				.orElseThrow())
-				.getCartItemList()
-				.stream()
-				.map(cartItem -> {
-					Integer val = cartItem.getValue();
-					return cartItem
-							.getProduct()
-							.getPriceList()
-							.stream()
-							.filter(price1 -> price1.getEnd() == null)
-							.map(Price::getValue)
-							.findFirst()
-							.orElse(0L);
-				})
-				.mapToLong(price -> price)
-				.reduce(0L, Long::sum);
+				.orElseThrow();
+		AtomicReference<Long> result = new AtomicReference<>(0L);
+		cart.getCartItemList().forEach(cartItem -> result.updateAndGet(v -> v + cartItem.getValue() * cartItem.getProduct().getPriceList().get(cartItem.getProduct().getPriceList().size() - 1).getValue()));
+		return result.get();
 	}
 
 	@PostMapping("/{id}")
