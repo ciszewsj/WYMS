@@ -39,9 +39,10 @@ public class ProductController {
 	@Transactional
 	public Product createProduct(@RequestBody ProductRequest request) {
 		Product product = new Product();
-
-		Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
-
+		Category category = null;
+		if (request.getCategoryId() != null) {
+			category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+		}
 		product.setCategory(category);
 		product.setName(request.getName());
 		product.setImage(request.getImage());
@@ -52,7 +53,7 @@ public class ProductController {
 		price.setStart(new Date());
 		product.getPriceList().add(price);
 
-		if (request.getAmount() != 0) {
+		if (request.getAmount() != null && request.getAmount() != 0) {
 			Deposit deposit = new Deposit();
 			deposit.setValue(request.getAmount());
 			deposit.setDate(new Date());
@@ -67,9 +68,10 @@ public class ProductController {
 	@Transactional
 	public Product updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
 		Product product = productRepository.findProductByCode(id).orElseThrow();
-
-		Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
-
+		Category category = null;
+		if (request.getCategoryId() != null) {
+			category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+		}
 		product.setCategory(category);
 		product.setName(request.getName());
 		product.setImage(request.getImage());

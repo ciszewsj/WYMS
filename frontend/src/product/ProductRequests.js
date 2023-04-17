@@ -38,6 +38,10 @@ export function getProduct(id, setResponse, setError) {
         if (response.status === 200) {
             response.json().then(
                 js => {
+                    if (js.category) {
+                        js.categoryId = js.category.id
+                    }
+                    console.log(js)
                     setResponse(js)
                 }
             )
@@ -93,7 +97,7 @@ export function createProduct(fields) {
             )
         }).then(response => {
         if (response.status === 200) {
-
+            console.log("CREATED")
         } else {
             console.log("ERROR")
         }
@@ -156,3 +160,4 @@ export function updateProduct(id, fields) {
         }
     })
 }
+

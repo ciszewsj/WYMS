@@ -1,16 +1,17 @@
 import {Button, Container, Form, Image, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {correctDeposit, getProduct, updateProduct} from "./ProductRequests";
-import {createPos, deletePos, updatePos} from "../pos/PosRequests";
+import {correctDeposit, createProduct, getProduct, updateProduct} from "./ProductRequests";
 import {timeToStr} from "../utils/TimeUtils";
 import {getCurrentPrice, longToPrice} from "../utils/MoneyUtils";
+import {getCategories} from "../category/CategoryRequests";
 
 let ProductSite = () => {
     let [formProduct, setFormProduct] = useState({})
+    let [categories, setCategories] = useState([])
     let [formDeposit, setFormDeposit] = useState({})
-    let [product, setProduct] = useState({})
     let [errorList, setErrorList] = useState([])
+    let [errorListCategories, setErrorListCategories] = useState([])
     let {id} = useParams();
 
     let DepositTable = ({date, description, type, value}) => {
@@ -32,23 +33,26 @@ let ProductSite = () => {
 
     useEffect(() => {
         if (id != null) {
-            getProduct(id, setProduct, setErrorList)
+            getProduct(id, setFormProduct, setErrorList)
         }
     }, [])
 
-    console.log(product)
+    useEffect(() => {
+        getCategories(setCategories, setErrorListCategories)
+    }, [])
 
     return <Container>
-        <h1>Product: {product.name}</h1>
+        <h1>Product: {formProduct.name}</h1>
         {id && <>
             <Container style={{margin: "auto", textAlign: "center"}}>
-                <Image style={{width: 480, height: 360}} src={product.image}/>
+                <Image style={{width: 480, height: 360}} src={formProduct.image}/>
             </Container>
         </>}
         <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Code</Form.Label>
-                <Form.Control type="text" placeholder="Code not available" defaultValue={product.code} readOnly={true}/>
+                <Form.Control type="text" placeholder="Code not available" defaultValue={formProduct.code}
+                              readOnly={true}/>
                 <Form.Text className="text-muted">
                     Value is not editable.
                 </Form.Text>
@@ -56,38 +60,60 @@ let ProductSite = () => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Product name" defaultValue={product.name} onChange={event => {
-                    formProduct.name = event.target.value
-                    setFormProduct({...formProduct})
-                    console.log(formProduct)
-                }
-                }/>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Price</Form.Label>
-                <Form.Control type="text" placeholder="0.00"
-                              defaultValue={product && product.priceList && getCurrentPrice(product.priceList)}
+                <Form.Control type="text" placeholder="Product name" defaultValue={formProduct.name}
                               onChange={event => {
-                                  formProduct.price = Number(event.target.value)
+                                  formProduct.name = event.target.value
                                   setFormProduct({...formProduct})
-                                  console.log(formProduct)
                               }
                               }/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Price</Form.Label>
+                <Form.Control type="number" placeholder="0.00"
+                              defaultValue={formProduct && formProduct.priceList && getCurrentPrice(formProduct.priceList)}
+                              onChange={event => {
+                                  formProduct.price = Number(event.target.value).toFixed(2)
+                                  formProduct.price = formProduct.price * 100
+                                  setFormProduct({...formProduct})
+                                  event.target.value = (formProduct.price / 100).toFixed(2).toString()
+                              }
+                              }/>
+            </Form.Group>
+            {!id &&
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Amount</Form.Label>
+                    <Form.Control type="number" placeholder="0"
+                                  defaultValue="0"
+                                  onChange={event => {
+                                      formProduct.amount = Number(event.target.value)
+                                      setFormProduct({...formProduct})
+                                      console.log(formProduct)
+                                  }
+                                  }/>
+                </Form.Group>}
+
+            <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Category</Form.Label>
-                <Form.Control type="text" placeholder="Image URL"
-                              defaultValue={product.category && product.category.name} onChange={event => {
-                    formProduct.categoryId = event.target.value
-                    setFormProduct({...formProduct})
-                    console.log(formProduct)
-                }
-                }/>
+                <Form.Select aria-label="Default select example"
+                             onChange={event => {
+                                 console.log(event.target.value)
+                                 formProduct.categoryId = Number(event.target.value)
+                                 setFormProduct({...formProduct})
+                             }}
+                             value={formProduct.categoryId}
+                >
+                    <option value="-1">No category</option>
+                    {categories &&
+                        categories.map(category => {
+                            return <option key={category.id} value={category.id}>{category.name} </option>
+                        })
+                    }
+                </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Image URL</Form.Label>
-                <Form.Control type="text" placeholder="Image URL" defaultValue={product.image} onChange={event => {
+                <Form.Control type="text" placeholder="Image URL" defaultValue={formProduct.image} onChange={event => {
                     formProduct.image = event.target.value
                     setFormProduct({...formProduct})
                     console.log(formProduct)
@@ -97,21 +123,16 @@ let ProductSite = () => {
 
             <Button variant="primary" type="submit" onClick={(e) => {
                 e.preventDefault();
+                console.log("cliecked?", formProduct)
                 if (id != null) {
                     updateProduct(id, formProduct)
                 } else {
-                    createPos({name: formProduct.name});
+                    console.log(123)
+                    createProduct(formProduct);
                 }
             }}>
                 Update
             </Button>
-            {id &&
-                <Button variant="danger" type="submit" onClick={(e) => {
-                    deletePos(id)
-                }}>
-                    Delete
-                </Button>
-            }
         </Form>
         {id && <>
             <h2>Deposit list:</h2>
@@ -125,13 +146,13 @@ let ProductSite = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {product.depositList && product.depositList.map(deposit =>
+                {formProduct.depositList && formProduct.depositList.map(deposit =>
                     <DepositTable key={deposit.id}
                                   type={deposit.type} value={deposit.value} description={deposit.description}
                                   date={deposit.date && timeToStr(deposit.date)}/>)}
                 <DepositTable date={"Total"}
-                              value={product.depositList && product.depositList.length > 0
-                                  ? product.depositList.map(deposit => deposit.value).reduce((prev, next) => prev + next)
+                              value={formProduct.depositList && formProduct.depositList.length > 0
+                                  ? formProduct.depositList.map(deposit => deposit.value).reduce((prev, next) => prev + next)
                                   : 0}/>
                 </tbody>
             </Table>
@@ -159,13 +180,6 @@ let ProductSite = () => {
                 }}>
                     Update
                 </Button>
-                {id &&
-                    <Button variant="danger" type="submit" onClick={(e) => {
-                        deletePos(id)
-                    }}>
-                        Delete
-                    </Button>
-                }
             </Form>
             <h2>Price list:</h2>
             <Table responsive={"md"} striped={true} border={1} variant={"light"}>
@@ -177,8 +191,9 @@ let ProductSite = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {product.priceList && product.priceList.map(price =>
-                    <PriceTable price={price.value && longToPrice(price.value)} dateStart={timeToStr(price.start)}
+                {formProduct.priceList && formProduct.priceList.map(price =>
+                    <PriceTable key={price.id}
+                                price={price.value && longToPrice(price.value)} dateStart={timeToStr(price.start)}
                                 dateStop={price.end ? timeToStr(price.end) : "-"}/>)}
                 </tbody>
             </Table>
