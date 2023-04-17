@@ -25,24 +25,27 @@ public class CartController {
 
 	@GetMapping("/{id}")
 	public Cart getCart(@PathVariable Long id) {
-		return cartRepository.findById(id).orElseThrow();
+		return cartRepository.findByPosId(id).orElseThrow();
 	}
 
 	@GetMapping("/{id}/price")
 	public Long getPrice(@PathVariable Long id) {
 		return (cartRepository
-				.findById(id)
+				.findByPosId(id)
 				.orElseThrow())
 				.getCartItemList()
 				.stream()
-				.map(CartItem::getProduct)
-				.map(Product::getPriceList)
-				.map(prices -> prices
-						.stream()
-						.filter(price -> price.getEnd() == null)
-						.map(Price::getValue)
-						.findFirst()
-						.orElse(0L))
+				.map(cartItem -> {
+					Integer val = cartItem.getValue();
+					return cartItem
+							.getProduct()
+							.getPriceList()
+							.stream()
+							.filter(price1 -> price1.getEnd() == null)
+							.map(Price::getValue)
+							.findFirst()
+							.orElse(0L);
+				})
 				.mapToLong(price -> price)
 				.reduce(0L, Long::sum);
 	}
@@ -60,6 +63,8 @@ public class CartController {
 		if (cartItem == null) {
 			cartItem = new CartItem();
 			cartItem.setProduct(product);
+			cartItem.setValue(0);
+			cart.getCartItemList().add(cartItem);
 		}
 		cartItem.setValue(cartItem.getValue() + request.getAmount());
 		if (cartItem.getValue() <= 0) {
@@ -72,6 +77,11 @@ public class CartController {
 	@Transactional
 	public Bill payForCart(@PathVariable Long id) {
 		Cart cart = cartRepository.findByPosId(id).orElseThrow();
+
+		if (cart.getCartItemList().size() == 0) {
+			throw new IllegalStateException();
+		}
+
 		List<CartItem> cartItemList = cart.getCartItemList();
 
 		cartItemList.forEach(cartItem -> {
@@ -79,7 +89,7 @@ public class CartController {
 			deposit.setType(Deposit.Type.BOUGHT);
 			deposit.setDescription("");
 			deposit.setDate(new Date());
-			deposit.setValue(cartItem.getValue());
+			deposit.setValue(cartItem.getValue() * -1);
 			cartItem.getProduct().getDepositList().add(deposit);
 		});
 

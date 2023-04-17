@@ -1,8 +1,9 @@
 import {createContext} from "react";
 
-let Settings = () => {
+export const Settings = () => {
     return {
-        token: ""
+        token: "",
+        cartId: 1
     }
 }
 

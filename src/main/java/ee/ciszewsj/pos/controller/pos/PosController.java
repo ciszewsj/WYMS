@@ -1,6 +1,8 @@
 package ee.ciszewsj.pos.controller.pos;
 
+import ee.ciszewsj.pos.database.Cart;
 import ee.ciszewsj.pos.database.Pos;
+import ee.ciszewsj.pos.repository.CartRepository;
 import ee.ciszewsj.pos.repository.PosRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.List;
 @CrossOrigin
 public class PosController {
 	private final PosRepository posRepository;
+	private final CartRepository cartRepository;
 
 	@GetMapping
 	public List<Pos> getPosList() {
@@ -32,6 +35,11 @@ public class PosController {
 		log.info("Create Pos Request: {}", request);
 		Pos pos = new Pos();
 		pos.setName(request.getName());
+
+		Cart cart = new Cart();
+		cart.setPos(pos);
+		cartRepository.save(cart);
+
 		return posRepository.save(pos);
 	}
 
