@@ -5,12 +5,12 @@ import {getCurrentPrice} from "../utils/MoneyUtils";
 export function ProductTable({productsList, navigate}) {
     let ProductsTable = ({code, name, category, price, deposit, image}) => {
         return <tr onClick={() => navigate('/products/' + code)}>
-            <th scope="row">{code}</th>
-            <td>{name}</td>
-            <td>{category}</td>
-            <td>{price}</td>
-            <td>{deposit}</td>
-            <td>
+            <th className={"align-middle"} scope="row">{code}</th>
+            <td className={"align-middle"}>{name}</td>
+            <td className={"align-middle"}>{category}</td>
+            <td className={"align-middle"}>{price}</td>
+            <td className={"align-middle"}>{deposit}</td>
+            <td className={"align-middle"}>
                 <Image style={{width: 320, height: 240, margin: "auto", textAlign: "center", display: "block"}}
                        src={image}/>
             </td>

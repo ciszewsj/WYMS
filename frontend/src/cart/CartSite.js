@@ -3,8 +3,11 @@ import {useContext, useEffect, useState} from "react";
 import {SettingsContext} from "../objects/Settings";
 import {addProductToCart, getCart, getCartPrice, payForCart} from "./CartRequests";
 import {getCurrentPrice, longToPrice} from "../utils/MoneyUtils";
+import {useNavigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 
 let CartSite = () => {
+    const navigate = useNavigate();
     const [settings, setSettings] = useContext(SettingsContext);
 
     let [cart, setCart] = useState({})
@@ -12,20 +15,33 @@ let CartSite = () => {
     let [cartPrice, setCartPrice] = useState(0)
     let [errorListPrice, setErrorListPrice] = useState([])
 
+    useEffect(() => {
+        getCart(settings.cartId, setCart, setErrorList)
+    }, [])
+
+    useEffect(() => {
+        getCartPrice(settings.cartId, setCartPrice, setErrorListPrice)
+    }, [])
+
+    if (settings.cartId == null) {
+        console.log("?????")
+        return <Navigate to={"/error"}/>;
+    }
+
 
     let CategoriesTable = ({id, image, name, category, code, price, amount}) => {
         return <tr>
-            <th scope="row">
+            <th className={"align-middle"} scope="row">
                 {image &&
                     <Image style={{width: 320, height: 240, margin: "auto", textAlign: "center", display: "block"}}
                            src={image}/>
                 }
             </th>
-            <td>{name}</td>
-            <td>{category}</td>
-            <td>{code}</td>
-            <td>{price}</td>
-            <td>{amount &&
+            <td className={"align-middle"}>{name}</td>
+            <td className={"align-middle"}>{category}</td>
+            <td className={"align-middle"}>{code}</td>
+            <td className={"align-middle"}>{price}</td>
+            <td className={"align-middle"}>{amount &&
                 <Button variant="danger" type="submit" onClick={(e) => {
                     e.preventDefault()
                     addProductToCart(settings.cartId, {productId: id, amount: -1})
@@ -33,8 +49,8 @@ let CartSite = () => {
                     -
                 </Button>}
             </td>
-            <td>{amount}</td>
-            <td>{amount &&
+            <td className={"align-middle"}>{amount}</td>
+            <td className={"align-middle"}>{amount &&
                 <Button variant="primary" type="submit" onClick={(e) => {
                     e.preventDefault()
                     addProductToCart(settings.cartId, {productId: id, amount: 1})
@@ -45,13 +61,6 @@ let CartSite = () => {
         </tr>
     }
 
-    useEffect(() => {
-        getCart(settings.cartId, setCart, setErrorList)
-    }, [])
-
-    useEffect(() => {
-        getCartPrice(settings.cartId, setCartPrice, setErrorListPrice)
-    }, [])
 
     return <Container>
         <h1>Cart: {cart.pos && cart.pos.name}</h1>

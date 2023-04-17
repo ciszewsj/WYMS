@@ -25,9 +25,9 @@ let ProductSite = () => {
 
     let PriceTable = ({dateStart, dateStop, price}) => {
         return <tr>
-            <td>{dateStart}</td>
+            <th>{dateStart}</th>
             <td>{dateStop}</td>
-            <td>{price}</td>
+            <td>{price} PLN</td>
         </tr>
     }
 
@@ -100,8 +100,7 @@ let ProductSite = () => {
                                  formProduct.categoryId = Number(event.target.value)
                                  setFormProduct({...formProduct})
                              }}
-                             value={formProduct.categoryId}
-                >
+                             value={formProduct.categoryId}>
                     <option value="-1">No category</option>
                     {categories &&
                         categories.map(category => {

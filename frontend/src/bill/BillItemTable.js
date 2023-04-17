@@ -1,23 +1,22 @@
-import {getCurrentPrice, longToPrice} from "../utils/MoneyUtils";
-import {Button, Image, Table} from "react-bootstrap";
-import {addProductToCart} from "../cart/CartRequests";
+import {getCurrentPrice} from "../utils/MoneyUtils";
+import {Image, Table} from "react-bootstrap";
 
 
 export function BillItemTable({products, navigate}) {
 
     let Element = ({id, image, name, category, code, price, amount}) => {
-        return <tr>
-            <th scope="row">
+        return <tr onClick={event => navigate("/products/" + code)}>
+            <th className={"align-middle"} scope="row">
                 {image &&
                     <Image style={{width: 320, height: 240, margin: "auto", textAlign: "center", display: "block"}}
                            src={image}/>
                 }
             </th>
-            <td>{name}</td>
-            <td>{category}</td>
-            <td>{code}</td>
-            <td>{price}</td>
-            <td>{amount}</td>
+            <td className={"align-middle"}>{name}</td>
+            <td className={"align-middle"}>{category}</td>
+            <td className={"align-middle"}>{code}</td>
+            <td className={"align-middle"}>{price}</td>
+            <td className={"align-middle"}>{amount}</td>
         </tr>
     }
 
@@ -35,7 +34,6 @@ export function BillItemTable({products, navigate}) {
         </thead>
         <tbody>
         {products && products.map(itemList => {
-            console.log(itemList)
             return <Element key={itemList.id}
                             id={itemList.product && itemList.product.id}
                             name={itemList.product && itemList.product.name}

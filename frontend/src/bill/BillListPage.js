@@ -15,17 +15,18 @@ let BillListPage = () => {
             e.preventDefault()
             navigate("/bills/" + id)
         }}>
-            <th scope="row">{id}</th>
-            <td>{date}</td>
-            <td>{cashierId}</td>
-            <td>{numberOfBought}</td>
-            <td>{numberOfReturns}</td>
+            <th className={"align-middle"} scope="row">{id}</th>
+            <td className={"align-middle"}>{date}</td>
+            <td className={"align-middle"}>{cashierId}</td>
+            <td className={"align-middle"}>{numberOfBought}</td>
+            <td className={"align-middle"}>{numberOfReturns}</td>
         </tr>
     }
 
     useEffect(() => {
         getBills(setBills, setErrors)
     }, [])
+
 
     return <Container>
         <h1>Bills</h1>
@@ -45,8 +46,8 @@ let BillListPage = () => {
                 return <BillTable key={bill.id}
                                   id={bill.id}
                                   date={timeToStr(bill.date)}
-                                  numberOfBought={bill.cartItemList.length}
-                                  numberOfReturns={bill.returnsItemList.length}
+                                  numberOfBought={bill.numberOfBought}
+                                  numberOfReturns={bill.numberOfReturns}
                                   cashierId={bill.cashierId}/>
             })}
             </tbody>

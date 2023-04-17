@@ -14,9 +14,9 @@ let CategoryListSite = () => {
     }, [])
     let CategoriesTable = ({id, name, url}) => {
         return <tr onClick={() => navigate('/categories/' + id)}>
-            <th scope="row">{id}</th>
-            <td>{name}</td>
-            <td>
+            <th scope="row" className={"align-middle"}>{id}</th>
+            <td className={"align-middle"}>{name}</td>
+            <td className={"align-middle"}>
                 <Image style={{width: 320, height: 240, margin: "auto", textAlign: "center", display: "block"}}
                        src={url}/>
             </td>

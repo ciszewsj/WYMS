@@ -13,6 +13,8 @@ import Settings, {SettingsContext} from "./objects/Settings";
 import {useState} from "react";
 import BillListPage from "./bill/BillListPage";
 import BillSite from "./bill/BillSite";
+import LoginSite from "./login/LoginSite";
+import ErrorSite from "./objects/ErrorSite";
 
 function App() {
     let [settings, setSettings] = useState(Settings());
@@ -23,7 +25,7 @@ function App() {
                 <Container className="p-4 m-auto">
                     <Routes>
                         <Route path="/" element={<MainPage/>}/>
-                        <Route path="/*" element={<PosSite/>}/>
+                        <Route path="/login" element={<LoginSite/>}/>
                         <Route path="/pos" element={<PosListSite/>}/>
                         <Route path="/pos/:id" element={<PosSite/>}/>
                         <Route path="/pos/new" element={<PosSite/>}/>
@@ -36,6 +38,7 @@ function App() {
                         <Route path="/cart" element={<CartSite/>}/>
                         <Route path="/bills" element={<BillListPage/>}/>
                         <Route path="/bills/:id" element={<BillSite/>}/>
+                        <Route path="/*" element={<ErrorSite/>}/>
                     </Routes>
                 </Container>
             </SettingsContext.Provider>

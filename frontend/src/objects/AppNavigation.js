@@ -1,9 +1,22 @@
-import {Container, Nav, Navbar} from "react-bootstrap";
+import {Container, Dropdown, Nav, Navbar} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
+import {useContext, useEffect, useState} from "react";
+import {SettingsContext} from "./Settings";
+import {getPoses} from "../pos/PosRequests";
 
 export default function AppNavigation() {
+    const [settings, setSettings] = useContext(SettingsContext);
 
+    let [poses, setPoses] = useState([])
+    let [posesError, setPosesError] = useState([])
 
+    let [name, setName] = useState("Choose PoS")
+
+    useEffect(() => {
+        getPoses(setPoses, setPosesError)
+    }, [settings])
+
+    
     function Navigation() {
         return (<Navbar expand={"lg"} bg={"dark"} variant={"dark"}>
             <Container>
@@ -18,7 +31,35 @@ export default function AppNavigation() {
                         <NavLink className={"nav-item nav-link"} to="/pos">PoSes</NavLink>
                     </Nav>
                     <Nav>
-                        <NavLink className={"nav-item nav-link"} id="nav-login" to="/login">Login</NavLink>
+                        {settings.userName == null ?
+                            <NavLink className={"nav-item nav-link"} id="nav-login" to="/login">Login</NavLink> :
+                            <Dropdown onChange={event => console.log(event)}>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {String(name)}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        onClick={event => {
+                                            event.preventDefault()
+                                            setName("Choose PoS")
+                                            settings.cartId = null
+                                            setSettings({...settings})
+                                        }}
+                                    >None</Dropdown.Item>
+                                    {poses.map(pos => {
+                                        return <Dropdown.Item key={pos.id}
+                                                              onClick={event => {
+                                                                  event.preventDefault()
+                                                                  setName(pos.name)
+                                                                  settings.cartId = pos.id
+                                                                  setSettings({...settings})
+                                                              }}
+                                        >{pos.name}</Dropdown.Item>
+                                    })}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -40,9 +40,16 @@
 td {
     margin: auto;
     text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 50% !important;
 }
 
 th {
     margin: auto;
     text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 50% !important;
+
 }
