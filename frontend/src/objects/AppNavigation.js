@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {SettingsContext} from "./Settings";
 import {getPoses} from "../pos/PosRequests";
+import {Navigate} from "react-router-dom";
 
 export default function AppNavigation() {
     const [settings, setSettings] = useContext(SettingsContext);
@@ -16,7 +17,8 @@ export default function AppNavigation() {
         getPoses(setPoses, setPosesError)
     }, [settings])
 
-    
+    // if (window.location.pathname !==)
+
     function Navigation() {
         return (<Navbar expand={"lg"} bg={"dark"} variant={"dark"}>
             <Container>
@@ -68,3 +70,16 @@ export default function AppNavigation() {
 
     return Navigation();
 }
+
+export let RequiredLogin = (props) => {
+    const [settings, setSettings] = useContext(SettingsContext);
+    if (settings.token == null) {
+        console.log("123???")
+        return (
+            <Navigate
+                to={"/login"}
+            />
+        );
+    }
+    return props.children;
+};

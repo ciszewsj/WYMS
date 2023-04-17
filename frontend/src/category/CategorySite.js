@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {createCategory, deleteCategory, getCategory, updateCategory} from "./CategoryRequests";
 import {getProductsByCategory} from "../product/ProductRequests";
 import {ProductTable} from "../product/ProductTableUtils";
+import {RequiredLogin} from "../objects/AppNavigation";
 
 let CategorySite = () => {
     const navigate = useNavigate();
@@ -41,65 +42,69 @@ let CategorySite = () => {
         }
     }, [category])
 
-    return <Container>
-        <h1>Category {category.name}</h1>
-        {id && <>
-            <Container style={{margin: "auto", textAlign: "center"}}>
-                <Image style={{width: 480, height: 360}} src={category.image}/>
-            </Container>
+    return <RequiredLogin>
+        <Container>
+            <h1>Category {category.name}</h1>
+            {id && <>
+                <Container style={{margin: "auto", textAlign: "center"}}>
+                    <Image style={{width: 480, height: 360}} src={category.image}/>
+                </Container>
 
-            <h2>Products</h2>
-            <ProductTable productsList={productsList} navigate={navigate}/>
-        </>}
+                <h2>Products</h2>
+                <ProductTable productsList={productsList} navigate={navigate}/>
+            </>}
 
-        <Form>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Id</Form.Label>
-                <Form.Control type="text" placeholder="Id not available" defaultValue={category.id} readOnly={true}/>
-                <Form.Text className="text-muted">
-                    Value is not editable.
-                </Form.Text>
-            </Form.Group>
+            <Form>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Id</Form.Label>
+                    <Form.Control type="text" placeholder="Id not available" defaultValue={category.id}
+                                  readOnly={true}/>
+                    <Form.Text className="text-muted">
+                        Value is not editable.
+                    </Form.Text>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Category name" defaultValue={category.name} onChange={event => {
-                    category.name = event.target.value
-                    setCategory({...category})
-                    console.log(category)
-                }
-                }/>
-            </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" placeholder="Category name" defaultValue={category.name}
+                                  onChange={event => {
+                                      category.name = event.target.value
+                                      setCategory({...category})
+                                      console.log(category)
+                                  }
+                                  }/>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Image URL</Form.Label>
-                <Form.Control type="text" placeholder="Image URL" defaultValue={category.image} onChange={event => {
-                    category.pictureUrl = event.target.value
-                    setCategory({...category})
-                    console.log(category)
-                }
-                }/>
-            </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Image URL</Form.Label>
+                    <Form.Control type="text" placeholder="Image URL" defaultValue={category.image} onChange={event => {
+                        category.pictureUrl = event.target.value
+                        setCategory({...category})
+                        console.log(category)
+                    }
+                    }/>
+                </Form.Group>
 
-            <Button variant="primary" type="submit" onClick={(e) => {
-                e.preventDefault();
-                if (id != null) {
-                    updateCategory(id, category)
-                } else {
-                    createCategory(category);
-                }
-            }}>
-                Update
-            </Button>
-            {id &&
-                <Button variant="danger" type="submit" onClick={(e) => {
-                    deleteCategory(id)
+                <Button variant="primary" type="submit" onClick={(e) => {
+                    e.preventDefault();
+                    if (id != null) {
+                        updateCategory(id, category)
+                    } else {
+                        createCategory(category);
+                    }
                 }}>
-                    Delete
+                    Update
                 </Button>
-            }
-        </Form>
-    </Container>
+                {id &&
+                    <Button variant="danger" type="submit" onClick={(e) => {
+                        deleteCategory(id)
+                    }}>
+                        Delete
+                    </Button>
+                }
+            </Form>
+        </Container>
+    </RequiredLogin>
 }
 
 export default CategorySite;

@@ -6,6 +6,7 @@ import {getCurrentPrice} from "../utils/MoneyUtils";
 import {addProductToCart} from "../cart/CartRequests";
 import {useContext} from "react";
 import {SettingsContext} from "../objects/Settings";
+import {RequiredLogin} from "../objects/AppNavigation";
 
 let MainPage = () => {
     const navigate = useNavigate();
@@ -44,16 +45,18 @@ let MainPage = () => {
             </Card.Body>
         </Card>)
     }
-    return <Container>
-        <h1>Choose Products</h1>
-        <div className="card-deck">
+    return <RequiredLogin>
+        <Container>
+            <h1>Choose Products</h1>
+            <div className="card-deck">
 
-            <Row xs={1} md={2} className="g-4">
-                {products && products.map(product => {
-                    return <ProductCard key={product.id} product={product}/>
-                })}
-            </Row>
-        </div>
-    </Container>
+                <Row xs={1} md={2} className="g-4">
+                    {products && products.map(product => {
+                        return <ProductCard key={product.id} product={product}/>
+                    })}
+                </Row>
+            </div>
+        </Container>
+    </RequiredLogin>
 }
 export default MainPage

@@ -1,5 +1,7 @@
+import {RequiredLogin} from "./AppNavigation";
+
 let ErrorSite = () => {
-    return <h1>ERROR SITE</h1>
+    return <RequiredLogin><h1>ERROR SITE</h1></RequiredLogin>
 }
 
 export default ErrorSite

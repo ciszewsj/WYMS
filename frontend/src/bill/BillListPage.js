@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {getBills} from "./BillRequests";
 import {timeToStr} from "../utils/TimeUtils";
 import {useNavigate} from "react-router-dom";
+import {RequiredLogin} from "../objects/AppNavigation";
 
 let BillListPage = () => {
     const navigate = useNavigate();
@@ -28,30 +29,32 @@ let BillListPage = () => {
     }, [])
 
 
-    return <Container>
-        <h1>Bills</h1>
-        <Table responsive={"md"} striped={true} border={1} variant={"light"}>
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>CashierId</th>
-                <th>Bought</th>
-                <th>Returned</th>
-            </tr>
-            </thead>
-            <tbody>
-            {bills.map(bill => {
-                console.log(bill)
-                return <BillTable key={bill.id}
-                                  id={bill.id}
-                                  date={timeToStr(bill.date)}
-                                  numberOfBought={bill.numberOfBought}
-                                  numberOfReturns={bill.numberOfReturns}
-                                  cashierId={bill.cashierId}/>
-            })}
-            </tbody>
-        </Table>
-    </Container>
+    return <RequiredLogin>
+        <Container>
+            <h1>Bills</h1>
+            <Table responsive={"md"} striped={true} border={1} variant={"light"}>
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>CashierId</th>
+                    <th>Bought</th>
+                    <th>Returned</th>
+                </tr>
+                </thead>
+                <tbody>
+                {bills.map(bill => {
+                    console.log(bill)
+                    return <BillTable key={bill.id}
+                                      id={bill.id}
+                                      date={timeToStr(bill.date)}
+                                      numberOfBought={bill.numberOfBought}
+                                      numberOfReturns={bill.numberOfReturns}
+                                      cashierId={bill.cashierId}/>
+                })}
+                </tbody>
+            </Table>
+        </Container>
+    </RequiredLogin>
 }
 export default BillListPage;

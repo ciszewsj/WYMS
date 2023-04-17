@@ -5,6 +5,7 @@ import {addProductToCart, getCart, getCartPrice, payForCart} from "./CartRequest
 import {getCurrentPrice, longToPrice} from "../utils/MoneyUtils";
 import {useNavigate} from "react-router-dom";
 import {Navigate} from "react-router-dom";
+import {RequiredLogin} from "../objects/AppNavigation";
 
 let CartSite = () => {
     const navigate = useNavigate();
@@ -16,14 +17,16 @@ let CartSite = () => {
     let [errorListPrice, setErrorListPrice] = useState([])
 
     useEffect(() => {
+        setCart({})
         getCart(settings.cartId, setCart, setErrorList)
-    }, [])
+    }, [settings])
 
     useEffect(() => {
+        setCartPrice(0)
         getCartPrice(settings.cartId, setCartPrice, setErrorListPrice)
-    }, [])
+    }, [settings])
 
-    if (settings.cartId == null) {
+    if (settings.token && settings.cartId == null) {
         console.log("?????")
         return <Navigate to={"/error"}/>;
     }
@@ -62,42 +65,44 @@ let CartSite = () => {
     }
 
 
-    return <Container>
-        <h1>Cart: {cart.pos && cart.pos.name}</h1>
-        <Table responsive={"md"} striped={true} border={1} variant={"light"}>
-            <thead>
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Code</th>
-                <th>Price</th>
-                <th/>
-                <th>Amount</th>
-                <th/>
-            </tr>
-            </thead>
-            <tbody>
-            {cart.cartItemList && cart.cartItemList.map(itemList => {
-                console.log(itemList)
-                return <CategoriesTable key={itemList.id}
-                                        id={itemList.product && itemList.product.id}
-                                        name={itemList.product && itemList.product.name}
-                                        image={itemList.product && itemList.product.image}
-                                        code={itemList.product && itemList.product.code}
-                                        price={itemList.product && itemList.product.priceList && getCurrentPrice(itemList.product.priceList) + " PLN"}
-                                        category={itemList.product && itemList.product.category && itemList.product.category.name}
-                                        amount={itemList.value}/>
-            })
-            }
-            <CategoriesTable code={"Total"} price={longToPrice(cartPrice)}/>
-            </tbody>
-        </Table>
-        <Button variant="primary" onClick={e => {
-            e.preventDefault()
-            payForCart(settings.cartId)
-        }}>Pay</Button>
-    </Container>
+    return <RequiredLogin>
+        <Container>
+            <h1>Cart: {cart.pos && cart.pos.name}</h1>
+            <Table responsive={"md"} striped={true} border={1} variant={"light"}>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Code</th>
+                    <th>Price</th>
+                    <th/>
+                    <th>Amount</th>
+                    <th/>
+                </tr>
+                </thead>
+                <tbody>
+                {cart.cartItemList && cart.cartItemList.map(itemList => {
+                    console.log(itemList)
+                    return <CategoriesTable key={itemList.id}
+                                            id={itemList.product && itemList.product.id}
+                                            name={itemList.product && itemList.product.name}
+                                            image={itemList.product && itemList.product.image}
+                                            code={itemList.product && itemList.product.code}
+                                            price={itemList.product && itemList.product.priceList && getCurrentPrice(itemList.product.priceList) + " PLN"}
+                                            category={itemList.product && itemList.product.category && itemList.product.category.name}
+                                            amount={itemList.value}/>
+                })
+                }
+                <CategoriesTable code={"Total"} price={longToPrice(cartPrice)}/>
+                </tbody>
+            </Table>
+            <Button variant="primary" onClick={e => {
+                e.preventDefault()
+                payForCart(settings.cartId)
+            }}>Pay</Button>
+        </Container>
+    </RequiredLogin>
 }
 
 export default CartSite;
