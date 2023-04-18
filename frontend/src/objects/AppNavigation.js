@@ -30,6 +30,7 @@ export default function AppNavigation() {
                         <NavLink className={"nav-item nav-link"} to="/categories">Categories</NavLink>
                         <NavLink className={"nav-item nav-link"} to="/bills">Bills</NavLink>
                         <NavLink className={"nav-item nav-link"} to="/pos">PoSes</NavLink>
+                        <NavLink className={"nav-item nav-link"} to="/files">Files</NavLink>
                     </Nav>
                     <Nav>
                         {settings.userName == null ?

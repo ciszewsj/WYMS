@@ -15,6 +15,7 @@ import BillListPage from "./bill/BillListPage";
 import BillSite from "./bill/BillSite";
 import LoginSite from "./login/LoginSite";
 import ErrorSite from "./objects/ErrorSite";
+import FilesSite from "./files/FilesSite";
 
 function App() {
     let [settings, setSettings] = useState(Settings());
@@ -39,6 +40,7 @@ function App() {
                         <Route path="/bills" element={<BillListPage/>}/>
                         <Route path="/bills/:id" element={<BillSite/>}/>
                         <Route path="/*" element={<ErrorSite/>}/>
+                        <Route path="/files" element={<FilesSite/>}/>
                     </Routes>
                 </Container>
             </SettingsContext.Provider>

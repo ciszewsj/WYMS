@@ -6,6 +6,7 @@ import {BillItemTable} from "./BillItemTable";
 import {timeToStr} from "../utils/TimeUtils";
 import {deleteCategory} from "../category/CategoryRequests";
 import {RequiredLogin} from "../objects/AppNavigation";
+import {getBillFiles} from "../files/FileRequest";
 
 let BillSite = () => {
     const navigate = useNavigate();
@@ -94,6 +95,12 @@ let BillSite = () => {
                 </Button>
             </Form>
         </Container>
+        <Button variant="primary" type="submit" onClick={(e) => {
+            e.preventDefault()
+            getBillFiles(id)
+        }}>
+            Print Bill
+        </Button>
     </RequiredLogin>
 }
 export default BillSite;
